@@ -1,20 +1,22 @@
 import { useState } from "react";
 import TaskCard from "../components/TaskCard";
 import type { Task } from "../types/task";
+import { useEffect } from "react";
 
 function BoardPage() {
-  const [tasks, setTasks] = useState<Task[]>([
-    {
-      id: 1,
-      title: "Design login flow",
-      status: "In Progress",
-    },
-    {
-      id: 2,
-      title: "Set up backend API",
-      status: "Done",
-    },
-  ]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+
+  useEffect(() => {
+    async function fetchTasks() {
+      const response = await fetch("http://localhost:5000/tasks");
+
+      const data = await response.json();
+
+      setTasks(data);
+    }
+
+    fetchTasks();
+  }, []);
 
   const [newTaskTitle, setNewTaskTitle] = useState("");
 
@@ -26,31 +28,72 @@ function BoardPage() {
     );
     const DoneTasks = tasks.filter(
     (task) => task.status === "Done"
+  );
+
+  async function handleUpdateStatus(id: number) {
+    
+    const task = tasks.find((t) => t.id === id);
+    if (!task) return;
+
+    let nextStatus = task.status;
+
+    if (task.status === "Backlog") {
+      nextStatus = "In Progress";
+    } else if (task.status === "In Progress") {
+      nextStatus = "Done";
+    }
+    
+    const response = await fetch(
+      `http://localhost:5000/tasks/${id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          status: nextStatus,
+        }),
+      }
     );
 
-  function handleUpdateStatus(id: number) {
-  setTasks(
-    tasks.map((task) =>
-      task.id === id
-        ? { ...task, status: "Done" }
-        : task
-        ));
-    }
-  function handleDeleteTask(id: number) {
-    setTasks(tasks.filter((task) => task.id !== id));
+    const updatedTask = await response.json();
+
+    setTasks((prevTasks) => {
+      const updatedTasks = prevTasks.map((task) =>
+        task.id === id ? updatedTask : task);
+
+      return updatedTasks;
+    });
   }
 
-  function handleAddTask() {
+  async function handleDeleteTask(id: number) {
+    await fetch(`http://localhost:5000/tasks/${id}`, {
+      method: "DELETE",
+    });
+
+    setTasks((prevTasks) =>
+      prevTasks.filter((task) => task.id !== id)
+    );
+  }
+
+  async function handleAddTask() {
     if (!newTaskTitle.trim()) return;
 
-    const newTask = {
-      id: Date.now(),
-      title: newTaskTitle,
-      status: "Backlog",
-    };
+    const response = await fetch(
+      "http://localhost:5000/tasks",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: newTaskTitle,
+        }),
+      }
+    );
 
-    setTasks([...tasks, newTask]);
-
+    const newTask = await response.json();
+    setTasks((prevTasks) => [...prevTasks, newTask]);
     setNewTaskTitle("");
   }
 
