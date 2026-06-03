@@ -1,54 +1,59 @@
 import { Router } from "express";
+import { pool } from "../db/connection.js";
 
 const router = Router();
 
-let tasks = [
-    {
-      id: 1,
-      title: "Design login flow",
-      status: "In Progress",
-    },
-    {
-      id: 2,
-      title: "Set up backend API",
-      status: "Done",
-    },
-  ];
+router.post("/", async (req, res) => {
+  const result = await pool.query(
+    `
+    INSERT INTO tasks (id, title, status)
+    VALUES ($1, $2, $3)
+    RETURNING *
+    `,
+    [
+      Date.now(),
+      req.body.title,
+      "Backlog",
+    ]
+  );
 
-router.post("/", (req, res) => {
-  const newTask = {
-    id: Date.now(),
-    title: req.body.title,
-    status: "Backlog",
-  };
-
-  tasks.push(newTask);
-
-  res.status(201).json(newTask);
+  res.status(201).json(result.rows[0]);
 });
 
-router.get("/", (req, res) => {
-  res.json(tasks);
+router.get("/", async (req, res) => {
+  const result = await pool.query(
+    "SELECT * FROM tasks"
+  );
+
+  res.json(result.rows);
 });
 
-router.delete("/:id", (req, res) => {
-  const taskId = Number(req.params.id);
-
-  tasks = tasks.filter((task) => task.id !== taskId);
+router.delete("/:id", async (req, res) => {
+  await pool.query(
+    "DELETE FROM tasks WHERE id = $1",
+    [req.params.id]
+  );
 
   res.json({
     message: "Task deleted",
   });
 });
 
-router.patch("/:id", (req, res) => {
-  const taskId = Number(req.params.id);
+router.patch("/:id", async (req, res) => {
+  const result = await pool.query(
+    `
+    UPDATE tasks
+    SET status = $1
+    WHERE id = $2
+    RETURNING *
+    `,
+    [
+      req.body.status,
+      req.params.id,
+    ]
+  );
 
-  tasks = tasks.map((task) => task.id === taskId ? { ...task, status: req.body.status } : task);
-
-  const updatedTask = tasks.find((task) => task.id === taskId);
-
-  res.json(updatedTask);
+  res.json(result.rows[0]);
 });
 
 export default router;
