@@ -1,0 +1,50 @@
+import * as taskService from "../services/taskServices.js";
+import { Request, Response } from "express";
+
+export async function getTasks(
+  req: Request,
+  res: Response
+) {
+  const tasks = await taskService.getTasks();
+
+  res.json(tasks);
+}
+
+export async function createTask(
+  req: Request,
+  res: Response
+) {
+  const task = await taskService.createTask(
+    req.body.title
+  );
+
+  res.status(201).json(task);
+}
+
+export async function deleteTask(
+  req: Request,
+  res: Response
+) {
+  const taskId = Number(req.params.id);
+
+  await taskService.deleteTask(taskId);
+
+  res.json({
+    message: "Task deleted",
+  });
+}
+
+export async function updateTaskStatus(
+  req: Request,
+  res: Response
+) {
+  const taskId = Number(req.params.id);
+
+  const task =
+    await taskService.updateTaskStatus(
+      taskId,
+      req.body.status
+    );
+
+  res.json(task);
+}
