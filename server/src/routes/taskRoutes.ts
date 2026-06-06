@@ -7,14 +7,10 @@ router.get("/", taskController.getTasks);
 
 router.post("/", taskController.createTask);
 
-router.delete(
-  "/:id",
-  taskController.deleteTask
-);
+router.post("/generate", taskController.generateDescription);
 
-router.patch(
-  "/:id",
-  taskController.updateTaskStatus
-);
+router.delete("/:id",taskController.deleteTask);
+
+router.patch("/:id", taskController.updateTaskStatus);
 
 export default router;

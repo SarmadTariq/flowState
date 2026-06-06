@@ -28,19 +28,36 @@ export async function deleteTask(id: number) {
 
 export async function updateStatus(id: number, status: string) {
 
-    const response = await fetch(
-      `http://localhost:5000/tasks/${id}`,
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          status: status,
-        }),
-      }
-    );
+  const response = await fetch(
+    `http://localhost:5000/tasks/${id}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        status: status,
+      }),
+    }
+  );
 
-    return response.json();
+  return response.json();
+}
 
-  }
+export async function generateDescription(title: string) {
+  console.log("Generating description for title:", title);
+  const response = await fetch(
+    "http://localhost:5000/tasks/generate",
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+      }),
+    }
+  );
+
+  return response.json();
+}

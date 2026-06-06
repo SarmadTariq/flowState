@@ -1,13 +1,11 @@
 import { useState } from "react";
 import TaskCard from "../components/TaskCard";
 import type { Task } from "../types/task";
-import { getTasks, addTask, deleteTask, updateStatus } from "../services/taskAPI";
+import { getTasks, addTask, deleteTask, updateStatus, generateDescription } from "../services/taskAPI";
 import { useEffect } from "react";
 
 function BoardPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
-
-  
 
   useEffect(() => {
 
@@ -19,6 +17,7 @@ function BoardPage() {
   }, []);
 
   const [newTaskTitle, setNewTaskTitle] = useState("");
+  const [newTaskDescription, setNewTaskDescription] = useState("");
 
   const backlogTasks = tasks.filter(
     (task) => task.status === "Backlog"
@@ -67,6 +66,17 @@ function BoardPage() {
     setNewTaskTitle("");
   }
 
+  async function handleGenerateDescription() {
+
+  if (!newTaskTitle.trim()) return;
+
+  console.log("Generating description for title:", newTaskTitle);
+  
+  const description = await generateDescription(newTaskTitle);
+
+  setNewTaskDescription(description.description);
+}
+
   return (
     <div>
       <h1>Board</h1>
@@ -80,7 +90,14 @@ function BoardPage() {
 
       <button onClick={handleAddTask}>Add Task</button>
 
-        <div className="board-columns">
+      <textarea
+        placeholder="Task description"
+        value={newTaskDescription}
+        onChange={(event) => setNewTaskDescription(event.target.value)}
+      />
+      <button onClick={handleGenerateDescription}>Generate Description</button>
+
+      <div className="board-columns">
 
         <div className="board-column">
             <h2>Backlog</h2>
