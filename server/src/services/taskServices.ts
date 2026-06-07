@@ -1,24 +1,28 @@
 import { pool } from "../db/connection.js";
 
-export async function getTasks() {
+export async function getTasks(userId: number) {
   const result = await pool.query(
-    "SELECT * FROM tasks"
+    `SELECT * FROM tasks
+    WHERE user_id = $1;`
+    , [userId]
   );
 
   return result.rows;
 }
 
-export async function createTask(title: string) {
+export async function createTask(title: string, userId: number, description: string | null = null) {
   const result = await pool.query(
     `
-    INSERT INTO tasks (id, title, status)
-    VALUES ($1, $2, $3)
+    INSERT INTO tasks (id, title, status, user_id, description)
+    VALUES ($1, $2, $3, $4, $5)
     RETURNING *
     `,
     [
       Date.now(),
       title,
       "Backlog",
+      userId,
+      description
     ]
   );
 

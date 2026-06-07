@@ -3,13 +3,13 @@ import * as aiService from "../services/aiService.js";
 import { Request, Response } from "express";
 
 export async function getTasks(req: Request, res: Response) {
-  const tasks = await taskService.getTasks();
+  const tasks = await taskService.getTasks(req.user!.userId);
 
   res.json(tasks);
 }
 
 export async function createTask(req: Request, res: Response) {
-  const task = await taskService.createTask(req.body.title);
+  const task = await taskService.createTask(req.body.title, req.user!.userId, req.body.description);
 
   res.status(201).json(task);
 }

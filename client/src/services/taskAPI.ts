@@ -1,8 +1,21 @@
 const API_URL = "http://localhost:5000/tasks";
 
 export async function getTasks() {
-  const response = await fetch(API_URL);
+  const response = await fetch(API_URL
+    ,{
+      headers: getAuthHeaders(),
+    }
+  );
   return response.json();
+}
+
+function getAuthHeaders() {
+  return {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${
+      localStorage.getItem("token")
+    }`,
+  };
 }
 
 export async function addTask(title: string) {
@@ -12,7 +25,7 @@ export async function addTask(title: string) {
         {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
+            ...getAuthHeaders(),
         },
         body: JSON.stringify({ title }),
     });
@@ -23,6 +36,7 @@ export async function addTask(title: string) {
 export async function deleteTask(id: number) {
   await fetch(`${API_URL}/${id}`, {
     method: "DELETE",
+    headers: getAuthHeaders(),
   });
 }
 
@@ -33,7 +47,7 @@ export async function updateStatus(id: number, status: string) {
     {
       method: "PATCH",
       headers: {
-        "Content-Type": "application/json",
+        ...getAuthHeaders()
       },
       body: JSON.stringify({
         status: status,
@@ -51,7 +65,7 @@ export async function generateDescription(title: string) {
     {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
+        ...getAuthHeaders()
       },
       body: JSON.stringify({
         title,
