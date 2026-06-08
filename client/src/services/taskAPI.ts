@@ -59,7 +59,7 @@ export async function updateStatus(id: number, status: string) {
 }
 
 export async function generateDescription(title: string) {
-  console.log("Generating description for title:", title);
+
   const response = await fetch(
     "http://localhost:5000/tasks/generate",
     {

@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { register } from "../services/authAPI";
+import PageContainer from "../components/PageContainer";
+import AuthCard from "../components/AuthCard";
+import Button from "../components/Button";
+import Input from "../components/Input";
 
 function RegisterPage() {
     const [email, setEmail] = useState("");
@@ -7,27 +11,33 @@ function RegisterPage() {
 
     async function handleRegister() {
         if (!email.trim() || !password.trim()) return;
-        const response = await register(email, password);
-        console.log("Registration response:", response);
+        await register(email, password);
     }
 
     return (
-        <div>
-            <h2>Register</h2> 
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
+    <PageContainer>
+        <AuthCard title="Register">
+
+            <Input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={setEmail}
             />
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(event) => setPassword(event.target.value)}
+
+            <Input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={setPassword}
             />
-            <button onClick={handleRegister}>Register</button>
-        </div>
+
+            <Button onClick={handleRegister}>
+            Register
+            </Button>
+
+        </AuthCard>
+    </PageContainer>
     );
 }
 

@@ -3,6 +3,7 @@ import TaskCard from "../components/TaskCard";
 import type { Task } from "../types/task";
 import { getTasks, addTask, deleteTask, updateStatus, generateDescription } from "../services/taskAPI";
 import { useEffect } from "react";
+import Column from "../components/Column";
 
 function BoardPage() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -19,15 +20,9 @@ function BoardPage() {
   const [newTaskTitle, setNewTaskTitle] = useState("");
   const [newTaskDescription, setNewTaskDescription] = useState("");
 
-  const backlogTasks = tasks.filter(
-    (task) => task.status === "Backlog"
-    );
-    const InProgressTasks = tasks.filter(
-    (task) => task.status === "In Progress"
-    );
-    const DoneTasks = tasks.filter(
-    (task) => task.status === "Done"
-  );
+  const backlogTasks = tasks.filter((task) => task.status === "Backlog");
+  const InProgressTasks = tasks.filter((task) => task.status === "In Progress");
+  const DoneTasks = tasks.filter((task) => task.status === "Done");
 
   async function handleUpdateStatus(id: number) {
     
@@ -69,8 +64,6 @@ function BoardPage() {
   async function handleGenerateDescription() {
 
   if (!newTaskTitle.trim()) return;
-
-  console.log("Generating description for title:", newTaskTitle);
   
   const description = await generateDescription(newTaskTitle);
 
@@ -99,47 +92,47 @@ function BoardPage() {
 
       <div className="board-columns">
 
-        <div className="board-column">
-            <h2>Backlog</h2>
+        <Column title="Backlog">
 
             {backlogTasks.map((task) => (
             <TaskCard
             id={task.id}
             title={task.title}
             status={task.status}
+            description={task.description}
             onDelete={handleDeleteTask}
             onUpdateStatus={handleUpdateStatus}
             />
             ))}
-        </div>
+        </Column>
 
-        <div className="board-column">
-            <h2>In Progress</h2>
+        <Column title="In Progress">
 
             {InProgressTasks.map((task) => (
             <TaskCard
             id={task.id}
             title={task.title}
             status={task.status}
+            description={task.description}
             onDelete={handleDeleteTask}
             onUpdateStatus={handleUpdateStatus}
             />
             ))}
-        </div>
+        </Column>
 
-        <div className="board-column">
-          <h2>Done</h2>
+        <Column title="Done">
 
           {DoneTasks.map((task) => (
             <TaskCard
               id={task.id}
               title={task.title}
               status={task.status}
+              description={task.description}
               onDelete={handleDeleteTask}
               onUpdateStatus={handleUpdateStatus}
             />
           ))}
-        </div>
+        </Column>
 
       </div>
     </div>

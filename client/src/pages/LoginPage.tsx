@@ -1,6 +1,10 @@
 import { useState } from "react";
 import { login } from "../services/authAPI";
 import { Link, useNavigate } from "react-router-dom";
+import PageContainer from "../components/PageContainer";
+import Button from "../components/Button";
+import Input from "../components/Input";
+import AuthCard from "../components/AuthCard";
 
 
 function LoginPage() {
@@ -12,52 +16,43 @@ function LoginPage() {
   async function handleLogin() {
     if (!email.trim() || !password.trim()) return;
 
-    const data = await login(
-      email,
-      password
-    );
+    const data = await login(email, password);
 
-    localStorage.setItem(
-      "token",
-      data.token
-    );
+    localStorage.setItem("token", data.token);
 
     navigate("/");
   }
 
   return (
-    <div>
-      <h1>Login</h1>
+  <PageContainer>
+    <AuthCard title="Login">
 
-      <input
+      <Input
         type="email"
         placeholder="Email"
         value={email}
-        onChange={(event) =>
-          setEmail(event.target.value)
-        }
+        onChange={setEmail}
       />
 
-      <input
+      <Input
         type="password"
         placeholder="Password"
         value={password}
-        onChange={(event) =>
-          setPassword(event.target.value)
-        }
+        onChange={setPassword}
       />
-
-      <button onClick={handleLogin}>
+      
+      <Button onClick={handleLogin}>
         Login
-      </button>
-
-      <p>
-        Don't have an account?{" "}
-        <Link to="/register">
-          Register
-        </Link>
-      </p>
-    </div>
+      </Button>
+      
+        <p>
+          Don't have an account?{" "}
+          <Link to="/register">
+            Register
+          </Link>
+        </p>
+        </AuthCard>
+  </PageContainer>
   );
 }
 

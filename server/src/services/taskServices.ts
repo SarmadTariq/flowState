@@ -12,11 +12,9 @@ export async function getTasks(userId: number) {
 
 export async function createTask(title: string, userId: number, description: string | null = null) {
   const result = await pool.query(
-    `
-    INSERT INTO tasks (id, title, status, user_id, description)
+    `INSERT INTO tasks (id, title, status, user_id, description)
     VALUES ($1, $2, $3, $4, $5)
-    RETURNING *
-    `,
+    RETURNING *`,
     [
       Date.now(),
       title,
@@ -41,12 +39,10 @@ export async function updateTaskStatus(
   status: string
 ) {
   const result = await pool.query(
-    `
-    UPDATE tasks
+    `UPDATE tasks
     SET status = $1
     WHERE id = $2
-    RETURNING *
-    `,
+    RETURNING *`,
     [status, id]
   );
 
