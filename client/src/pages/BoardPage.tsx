@@ -72,23 +72,47 @@ function BoardPage() {
 
   return (
     <div>
+      <div className="board-header">
       <h1>Board</h1>
 
-      <input
-        type="text"
-        placeholder="Enter task title"
-        value={newTaskTitle}
-        onChange={(event) => setNewTaskTitle(event.target.value)}
-      />
+      <div className="task-form">
 
-      <button onClick={handleAddTask}>Add Task</button>
+        <input
+          className="task-title-input"
+          type="text"
+          placeholder="Enter task title"
+          value={newTaskTitle}
+          onChange={(event) =>
+            setNewTaskTitle(event.target.value)
+          }
+        />
 
-      <textarea
-        placeholder="Task description"
-        value={newTaskDescription}
-        onChange={(event) => setNewTaskDescription(event.target.value)}
-      />
-      <button onClick={handleGenerateDescription}>Generate Description</button>
+        <textarea
+          className="task-description-input"
+          placeholder="Task description"
+          value={newTaskDescription}
+          onChange={(event) =>
+            setNewTaskDescription(event.target.value)
+          }
+        />
+
+        <div className="task-actions">
+          <button
+            className="secondary-button"
+            onClick={handleGenerateDescription}
+          >
+            ✨ Generate Description
+          </button>
+
+          <button
+            className="primary-button"
+            onClick={handleAddTask}
+          >
+            Add Task
+          </button>
+        </div>
+
+      </div>
 
       <div className="board-columns">
 
@@ -135,6 +159,7 @@ function BoardPage() {
         </Column>
 
       </div>
+    </div>
     </div>
   );
 }
