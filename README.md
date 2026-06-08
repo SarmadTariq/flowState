@@ -108,12 +108,12 @@ Create a PostgreSQL database and configure environment variables.
 
 Backend:
 
-DATABASE_URL=
-JWT_SECRET=
-AI_WORKER_URL=
+DATABASE_URL=  
+JWT_SECRET=  
+AI_WORKER_URL=  
 
 Cloudflare Worker:
 
-CLOUDFLARE_GATEWAY_TOKEN=
-AI_BYOK_ALIAS=
-AI_MODEL=
+CLOUDFLARE_GATEWAY_TOKEN=  
+AI_BYOK_ALIAS=  
+AI_MODEL=  
